@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/axelgalicia/kubernetes-app#readme",
   "dependencies": {
+    "docker-container-id": "^1.0.1",
     "express": "^4.16.3"
   },
   "devDependencies": {

@@ -9,7 +9,7 @@ import { User } from '../../domain/user';
 const router: Router = Router();
 
 router.get('/', (req: Request, res: Response) => {
-    res.send('Hello User, this is a container');
+    res.send('List of users');
 });
 
 router.get('/:username', (req: Request, res: Response) => {

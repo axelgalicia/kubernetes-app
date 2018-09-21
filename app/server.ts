@@ -2,10 +2,14 @@
     SERVER
 */
 
+// External Dependencies
 import express from 'express';
 import bodyParser from 'body-parser';
 
+//Controllers
 import { UserController } from './controllers/users';
+import { HomeController } from './controllers/home';
+//Utils
 import { message } from './message';
 
 
@@ -19,6 +23,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //Routers
+app.use('/', HomeController);
 app.use('/user', UserController);
 
 app.listen(port, () => {
