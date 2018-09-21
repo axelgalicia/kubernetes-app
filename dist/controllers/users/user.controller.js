@@ -7,7 +7,11 @@ var express_1 = require("express");
 var user_1 = require("../../domain/user");
 var router = express_1.Router();
 router.get('/', function (req, res) {
-    res.send('List of users');
+    user_1.User.getAllUsers().then(function (users) {
+        res.status(200).send(users);
+    }).catch(function (err) {
+        res.status(500).send(err);
+    });
 });
 router.get('/:username', function (req, res) {
     var username = req.params.username;

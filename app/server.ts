@@ -6,14 +6,12 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 
+
 //Controllers
 import { UserController } from './controllers/users';
 import { HomeController } from './controllers/home';
 //Utils
 import { message } from './message';
-
-
-
 
 const app: express.Application = express();
 const port: string = process.env.PORT || '3000';

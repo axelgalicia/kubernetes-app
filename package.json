@@ -22,7 +22,8 @@
   "homepage": "https://github.com/axelgalicia/kubernetes-app#readme",
   "dependencies": {
     "docker-container-id": "^1.0.1",
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "nodejs-mysql": "^0.1.3"
   },
   "devDependencies": {
     "@types/es6-shim": "^0.31.37",

@@ -4,12 +4,19 @@
 
 import { Router, Request, Response } from 'express';
 import { User } from '../../domain/user';
-
+import { db } from '../../db';
 
 const router: Router = Router();
 
 router.get('/', (req: Request, res: Response) => {
-    res.send('List of users');
+
+    User.getAllUsers().then((users: User[]) => {
+        res.status(200).send(users);
+    }).catch((err: any) => {
+        res.status(500).send(err);
+    });
+
+
 });
 
 router.get('/:username', (req: Request, res: Response) => {
