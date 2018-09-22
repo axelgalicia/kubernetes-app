@@ -8,6 +8,7 @@ import { UserQueries } from '../cqrs/user.queries';
 import { ResponseHandler } from '../../common/responseHandler';
 import { UserValidator } from '../validators/user.validator';
 import { ValidatorResponse } from '../../common/validatorReponse';
+import { UserCommands } from '../cqrs/user.commands';
 
 const router: Router = Router();
 
@@ -45,11 +46,14 @@ router.get('/:username', (req: Request, res: Response) => {
 router.post('/', (req: Request, res: Response) => {
     let { username, name, role, yearsOfExperience, onContract } = req.body;
     let user = new User(username, name, role, yearsOfExperience, onContract);
-    console.log(user)
     let validator: ValidatorResponse = UserValidator.validate(user);
     if (validator.success) {
-        console.log('Registering user');
-        ResponseHandler.successfulNoContent(res);
+        console.log(`Registering user: ${username}`);
+        UserCommands.create(user).then(result => {
+            ResponseHandler.successfulNoContent(res, {});
+        }).catch(err => {
+            ResponseHandler.serverError(res, err);
+        });
     } else {
         ResponseHandler.errorInvalidRequest(res, user, validator.errors);
     }
