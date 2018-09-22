@@ -6,10 +6,9 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 
-
 //Controllers
-import { UserController } from './controllers/users';
-import { HomeController } from './controllers/home';
+import { UserController } from './user/controllers';
+import { HomeController } from './home/controllers';
 //Utils
 import { message } from './message';
 
@@ -19,6 +18,7 @@ const port: string = process.env.PORT || '3000';
 //Parsers
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
 
 //Routers
 app.use('/', HomeController);

@@ -48,8 +48,7 @@ router.get('/', function (req, res) {
                     case 1:
                         id = _a.sent();
                         id = !!id ? id.substring(0, 11) : 'Not a container';
-                        message = 'Summit - Kubernetes [container] id:' + id;
-                        console.log(message);
+                        message = "Summit - Kubernetes id:[" + id + "]";
                         res.send(message);
                         return [2 /*return*/];
                 }
