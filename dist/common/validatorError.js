@@ -11,6 +11,9 @@ var ValidatorError = /** @class */ (function () {
     ValidatorError.invalidValueError = function (field, validValudMessage) {
         return new ValidatorError(field, "Invalid value for " + field + ", " + validValudMessage);
     };
+    ValidatorError.invalidValueTypeError = function (field, type) {
+        return new ValidatorError(field, "Invalid data type for " + field + ", it should be a " + type);
+    };
     return ValidatorError;
 }());
 exports.ValidatorError = ValidatorError;

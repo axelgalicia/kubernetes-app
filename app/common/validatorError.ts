@@ -11,4 +11,8 @@ export class ValidatorError {
     public static invalidValueError(field: string, validValudMessage: string): ValidatorError {
         return new ValidatorError(field, `Invalid value for ${field}, ${validValudMessage}`);
     }
+
+    public static invalidValueTypeError(field: string, type: string): ValidatorError {
+        return new ValidatorError(field, `Invalid data type for ${field}, it should be a ${type}`);
+    }
 }
