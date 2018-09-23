@@ -9,7 +9,7 @@ var ResponseHandler = /** @class */ (function () {
     ResponseHandler.successfulContent = function (res, content) {
         res.status(200).send(new genericResponse_1.GenericResponse(true, content));
     };
-    ResponseHandler.successfulNoContent = function (res, content) {
+    ResponseHandler.successfulNoContent = function (res) {
         res.status(204).send(new genericResponse_1.GenericResponse(true));
     };
     ResponseHandler.errorInvalidRequest = function (res, content, errors) {

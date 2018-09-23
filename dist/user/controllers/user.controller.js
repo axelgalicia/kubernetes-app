@@ -4,12 +4,12 @@
 */
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = require("express");
-var user_1 = require("../domain/user");
-var user_queries_1 = require("../cqrs/user.queries");
 var responseHandler_1 = require("../../common/responseHandler");
+var user_1 = require("../domain/user");
 var user_validator_1 = require("../validators/user.validator");
-var user_commands_1 = require("../cqrs/user.commands");
 var validatorError_1 = require("../../common/validatorError");
+var user_queries_1 = require("../cqrs/user.queries");
+var user_commands_1 = require("../cqrs/user.commands");
 var router = express_1.Router();
 // [GET user/]
 router.get('/', function (req, res) {
@@ -39,14 +39,15 @@ router.post('/', function (req, res) {
     var user = new user_1.User(username, name, role, yearsOfExperience, onContract);
     var validator = user_validator_1.UserValidator.validate(user);
     if (validator.success) {
-        user_queries_1.UserQueries.getUserByUsername(username).then(function (user) {
-            if (!!user) {
-                responseHandler_1.ResponseHandler.errorInvalidRequest(res, {}, [new validatorError_1.ValidatorError('username', 'User already exist')]);
+        user_queries_1.UserQueries.getUserByUsername(username).then(function (currentUser) {
+            if (!!currentUser) {
+                responseHandler_1.ResponseHandler.errorInvalidRequest(res, {}, [new validatorError_1.ValidatorError('username', username + " username already exist")]);
             }
             else {
+                console.log(user);
                 user_commands_1.UserCommands.create(user).then(function (result) {
                     console.log("Registering user: " + username);
-                    responseHandler_1.ResponseHandler.successfulNoContent(res, {});
+                    responseHandler_1.ResponseHandler.successfulNoContent(res);
                 }).catch(function (err) {
                     responseHandler_1.ResponseHandler.serverError(res, err);
                 });
@@ -66,9 +67,18 @@ router.put('/:username', function (req, res) {
     var user = new user_1.User(username, name, role, yearsOfExperience, onContract);
     var validator = user_validator_1.UserValidator.validate(user);
     if (validator.success) {
-        console.log("Updating user: " + username);
-        user_commands_1.UserCommands.updateByUsername(user).then(function (result) {
-            responseHandler_1.ResponseHandler.successfulContent(res, user);
+        user_queries_1.UserQueries.getUserByUsername(username).then(function (currentUser) {
+            if (!!currentUser) {
+                console.log("Updating user: " + username);
+                user_commands_1.UserCommands.updateByUsername(user).then(function (result) {
+                    responseHandler_1.ResponseHandler.successfulContent(res, user);
+                }).catch(function (err) {
+                    responseHandler_1.ResponseHandler.serverError(res, err);
+                });
+            }
+            else {
+                responseHandler_1.ResponseHandler.errorInvalidRequest(res, {}, [new validatorError_1.ValidatorError('username', username + " username does not exist")]);
+            }
         }).catch(function (err) {
             responseHandler_1.ResponseHandler.serverError(res, err);
         });
@@ -76,5 +86,24 @@ router.put('/:username', function (req, res) {
     else {
         responseHandler_1.ResponseHandler.errorInvalidRequest(res, user, validator.errors);
     }
+});
+// [DELETE /user/:username] { User }
+router.delete('/:username', function (req, res) {
+    var username = req.params.username;
+    console.log("Deleting user: " + username);
+    user_queries_1.UserQueries.getUserByUsername(username).then(function (currentUser) {
+        if (!!currentUser) {
+            user_commands_1.UserCommands.deleteByUsername(username).then(function (result) {
+                responseHandler_1.ResponseHandler.successfulNoContent(res);
+            }).catch(function (err) {
+                responseHandler_1.ResponseHandler.serverError(res, err);
+            });
+        }
+        else {
+            responseHandler_1.ResponseHandler.errorInvalidRequest(res, {}, [new validatorError_1.ValidatorError('username', username + " username does not exist")]);
+        }
+    }).catch(function (err) {
+        responseHandler_1.ResponseHandler.serverError(res, err);
+    });
 });
 exports.UserController = router;

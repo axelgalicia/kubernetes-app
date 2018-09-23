@@ -14,11 +14,15 @@ var controllers_1 = require("./user/controllers");
 var controllers_2 = require("./home/controllers");
 //Utils
 var message_1 = require("./message");
+//Middleware
+var logger_middleware_1 = require("./middlewares/logger.middleware");
 var app = express_1.default();
 var port = process.env.PORT || '3000';
 //Parsers
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
+//Middleware
+app.use(logger_middleware_1.logger);
 //Routers
 app.use('/', controllers_2.HomeController);
 app.use('/user', controllers_1.UserController);

@@ -7,6 +7,7 @@ var User = /** @class */ (function () {
         this.role = role;
         this.yearsOfExperience = yearsOfExperience;
         this.onContract = onContract;
+        this.username = this.username.toLowerCase();
         this.onContract = this.onContract == undefined ? false : this.onContract;
     }
     User.toJson = function (user) {

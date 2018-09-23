@@ -10,7 +10,7 @@ export class ResponseHandler {
         res.status(200).send(new GenericResponse(true, content));
     }
 
-    public static successfulNoContent(res: Response, content?: any) {
+    public static successfulNoContent(res: Response) {
         res.status(204).send(new GenericResponse(true));
     }
 
@@ -24,7 +24,7 @@ export class ResponseHandler {
     }
 
     public static serverError(res: Response, err: any) {
-        res.status(500).send(new GenericResponse(false, null, ErrorType.SERVER_ERROR,ErrorType.SERVER_ERROR, err));
+        res.status(500).send(new GenericResponse(false, null, ErrorType.SERVER_ERROR, ErrorType.SERVER_ERROR, err));
     }
 
 }

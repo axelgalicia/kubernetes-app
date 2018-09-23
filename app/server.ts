@@ -11,6 +11,8 @@ import { UserController } from './user/controllers';
 import { HomeController } from './home/controllers';
 //Utils
 import { message } from './message';
+//Middleware
+import { logger } from './middlewares/logger.middleware';
 
 const app: express.Application = express();
 const port: string = process.env.PORT || '3000';
@@ -18,6 +20,9 @@ const port: string = process.env.PORT || '3000';
 //Parsers
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+//Middleware
+app.use(logger);
 
 
 //Routers

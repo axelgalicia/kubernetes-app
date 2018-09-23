@@ -9,6 +9,7 @@ export class User {
         public yearsOfExperience: number,
         public onContract: boolean
     ) {
+        this.username = this.username.toLowerCase();
         this.onContract = this.onContract == undefined ? false : this.onContract;
     }
 

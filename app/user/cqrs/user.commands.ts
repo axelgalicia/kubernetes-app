@@ -5,7 +5,6 @@ export class UserCommands {
 
     //Create User
     public static create(user: User): Promise<boolean> {
-
         return new Promise((res, rej) => {
             db.exec('INSERT into user set ?', user)
                 .then((rows: any) => {
@@ -34,18 +33,14 @@ export class UserCommands {
     }
 
     //Delete User
-    public static deleteByUsername(username: string): Promise<User> {
+    public static deleteByUsername(username: string): Promise<boolean> {
         return new Promise((res, rej) => {
-            db.exec('select username, name, role, yearsOfExperience, onContract from user where username=?', [username])
+            db.exec('DELETE FROM user where username=?', [username])
                 .then((rows: any) => {
-                    let rowsParsed = JSON.parse(JSON.stringify(rows));
-                    let users: User[] = rowsParsed.map((user: any) => {
-                        return User.toJson(user);
-                    });
-                    res(users[0]);
+                    res(true);
                 }).catch((e: any) => {
                     console.log(e);
-                    rej([{ error: `Could not get user: ${e}` }]);
+                    rej([{ error: `Could not delete user: ${e}` }]);
                 });
         });
     }
