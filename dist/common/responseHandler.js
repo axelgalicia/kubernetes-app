@@ -19,7 +19,7 @@ var ResponseHandler = /** @class */ (function () {
         res.status(404).send(new genericResponse_1.GenericResponse(false, content, errorMessage ? errorMessage : errorType_1.ErrorType.NOT_FOUND, errorType_1.ErrorType.NOT_FOUND));
     };
     ResponseHandler.serverError = function (res, err) {
-        res.status(500).send(new genericResponse_1.GenericResponse(false, null, errorType_1.ErrorType.SERVER_ERROR, err));
+        res.status(500).send(new genericResponse_1.GenericResponse(false, null, errorType_1.ErrorType.SERVER_ERROR, errorType_1.ErrorType.SERVER_ERROR, err));
     };
     return ResponseHandler;
 }());

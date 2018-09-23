@@ -10,7 +10,6 @@ var UserCommands = /** @class */ (function () {
         return new Promise(function (res, rej) {
             db_1.db.exec('INSERT into user set ?', user)
                 .then(function (rows) {
-                //console.log(rows);
                 res(true);
             }).catch(function (e) {
                 console.log(e);
@@ -19,18 +18,15 @@ var UserCommands = /** @class */ (function () {
         });
     };
     //Update User
-    UserCommands.updateByUsername = function (username) {
+    UserCommands.updateByUsername = function (user) {
         return new Promise(function (res, rej) {
-            db_1.db.exec('select username, name, role, yearsOfExperience, onContract from user where username=?', [username])
+            var username = user.username, name = user.name, role = user.role, yearsOfExperience = user.yearsOfExperience, onContract = user.onContract;
+            db_1.db.exec('UPDATE user SET name=?, role=?, yearsOfExperience=?, onContract=? where username=?', [name, role, yearsOfExperience, onContract, username])
                 .then(function (rows) {
-                var rowsParsed = JSON.parse(JSON.stringify(rows));
-                var users = rowsParsed.map(function (user) {
-                    return user_1.User.toJson(user);
-                });
-                res(users[0]);
+                res(true);
             }).catch(function (e) {
                 console.log(e);
-                rej([{ error: "Could not get user: " + e }]);
+                rej([{ error: "Could not update user: " + e }]);
             });
         });
     };

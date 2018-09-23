@@ -9,16 +9,12 @@ var user_queries_1 = require("../cqrs/user.queries");
 var responseHandler_1 = require("../../common/responseHandler");
 var user_validator_1 = require("../validators/user.validator");
 var user_commands_1 = require("../cqrs/user.commands");
+var validatorError_1 = require("../../common/validatorError");
 var router = express_1.Router();
 // [GET user/]
 router.get('/', function (req, res) {
     user_queries_1.UserQueries.getAllUsers().then(function (users) {
-        if (users.length < 1) {
-            responseHandler_1.ResponseHandler.successfulNoContent(res, []);
-        }
-        else {
-            responseHandler_1.ResponseHandler.successfulContent(res, users);
-        }
+        responseHandler_1.ResponseHandler.successfulContent(res, users);
     }).catch(function (err) {
         responseHandler_1.ResponseHandler.serverError(res, err);
     });
@@ -43,9 +39,36 @@ router.post('/', function (req, res) {
     var user = new user_1.User(username, name, role, yearsOfExperience, onContract);
     var validator = user_validator_1.UserValidator.validate(user);
     if (validator.success) {
-        console.log("Registering user: " + username);
-        user_commands_1.UserCommands.create(user).then(function (result) {
-            responseHandler_1.ResponseHandler.successfulNoContent(res, {});
+        user_queries_1.UserQueries.getUserByUsername(username).then(function (user) {
+            if (!!user) {
+                responseHandler_1.ResponseHandler.errorInvalidRequest(res, {}, [new validatorError_1.ValidatorError('username', 'User already exist')]);
+            }
+            else {
+                user_commands_1.UserCommands.create(user).then(function (result) {
+                    console.log("Registering user: " + username);
+                    responseHandler_1.ResponseHandler.successfulNoContent(res, {});
+                }).catch(function (err) {
+                    responseHandler_1.ResponseHandler.serverError(res, err);
+                });
+            }
+        }).catch(function (err) {
+            responseHandler_1.ResponseHandler.serverError(res, err);
+        });
+    }
+    else {
+        responseHandler_1.ResponseHandler.errorInvalidRequest(res, user, validator.errors);
+    }
+});
+// [PUT /user/:username] { User }
+router.put('/:username', function (req, res) {
+    var username = req.params.username;
+    var _a = req.body, name = _a.name, role = _a.role, yearsOfExperience = _a.yearsOfExperience, onContract = _a.onContract;
+    var user = new user_1.User(username, name, role, yearsOfExperience, onContract);
+    var validator = user_validator_1.UserValidator.validate(user);
+    if (validator.success) {
+        console.log("Updating user: " + username);
+        user_commands_1.UserCommands.updateByUsername(user).then(function (result) {
+            responseHandler_1.ResponseHandler.successfulContent(res, user);
         }).catch(function (err) {
             responseHandler_1.ResponseHandler.serverError(res, err);
         });

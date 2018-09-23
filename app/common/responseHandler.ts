@@ -24,7 +24,7 @@ export class ResponseHandler {
     }
 
     public static serverError(res: Response, err: any) {
-        res.status(500).send(new GenericResponse(false, null, ErrorType.SERVER_ERROR, err));
+        res.status(500).send(new GenericResponse(false, null, ErrorType.SERVER_ERROR,ErrorType.SERVER_ERROR, err));
     }
 
 }

@@ -9,6 +9,7 @@ import { ResponseHandler } from '../../common/responseHandler';
 import { UserValidator } from '../validators/user.validator';
 import { ValidatorResponse } from '../../common/validatorReponse';
 import { UserCommands } from '../cqrs/user.commands';
+import { ValidatorError } from '../../common/validatorError';
 
 const router: Router = Router();
 
@@ -16,11 +17,7 @@ const router: Router = Router();
 router.get('/', (req: Request, res: Response) => {
 
     UserQueries.getAllUsers().then((users: User[]) => {
-        if (users.length < 1) {
-            ResponseHandler.successfulNoContent(res, []);
-        } else {
-            ResponseHandler.successfulContent(res, users);
-        }
+        ResponseHandler.successfulContent(res, users);
     }).catch((err: any) => {
         ResponseHandler.serverError(res, err);
     });
@@ -48,9 +45,38 @@ router.post('/', (req: Request, res: Response) => {
     let user = new User(username, name, role, yearsOfExperience, onContract);
     let validator: ValidatorResponse = UserValidator.validate(user);
     if (validator.success) {
-        console.log(`Registering user: ${username}`);
-        UserCommands.create(user).then(result => {
-            ResponseHandler.successfulNoContent(res, {});
+        UserQueries.getUserByUsername(username).then((user: User) => {
+            if (!!user) {
+                ResponseHandler.errorInvalidRequest(res, {}, 
+                    [new ValidatorError('username', 'User already exist')]);
+
+            } else {
+                UserCommands.create(user).then(result => {
+                    console.log(`Registering user: ${username}`);
+                    ResponseHandler.successfulNoContent(res, {});
+                }).catch(err => {
+                    ResponseHandler.serverError(res, err);
+                });
+            }
+        }).catch(err => {
+            ResponseHandler.serverError(res, err);
+        });
+
+    } else {
+        ResponseHandler.errorInvalidRequest(res, user, validator.errors);
+    }
+});
+
+// [PUT /user/:username] { User }
+router.put('/:username', (req: Request, res: Response) => {
+    let { username } = req.params;
+    let { name, role, yearsOfExperience, onContract } = req.body;
+    let user = new User(username, name, role, yearsOfExperience, onContract);
+    let validator: ValidatorResponse = UserValidator.validate(user);
+    if (validator.success) {
+        console.log(`Updating user: ${username}`);
+        UserCommands.updateByUsername(user).then(result => {
+            ResponseHandler.successfulContent(res, user);
         }).catch(err => {
             ResponseHandler.serverError(res, err);
         });
