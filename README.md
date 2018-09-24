@@ -56,9 +56,12 @@ docker run -p 3000:3000 --link mysql-test:mysql-test -e MYSQL_USER=user_test -e 
 # REST API
 
 **GET** http://localhost:3000/  -- shows container id 
+
 **GET** http://localhost:3000/user  -- list of users
+
 **GET** http://localhost:3000/user/:username  -- shows only username
     [username]: The username for the user
+    
 **POST** http://localhost:3000/user  -- Creates a new user
  body:
    ``` json 
