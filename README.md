@@ -23,6 +23,8 @@ pass: user_pass
 ``` sql
 CREATE DATABASE summit;
 
+USE summit;
+
 CREATE TABLE `user` (
   `username` varchar(100) NOT NULL,
   `name` varchar(100) NOT NULL,
@@ -32,9 +34,6 @@ CREATE TABLE `user` (
   PRIMARY KEY (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8
 
-```
-
-``` sql
 
 CREATE USER 'user_test'@'%';
 ALTER USER 'user_test'@'%'
@@ -44,6 +43,7 @@ GRANT Insert ON summit.* TO 'user_test'@'%';
 GRANT Select ON summit.* TO 'user_test'@'%';
 GRANT Update ON summit.* TO 'user_test'@'%';
 FLUSH PRIVILEGES;
+
 ```
 
 
@@ -66,19 +66,21 @@ services:
       resources:
         limits:
           cpus: "0.1"
-          memory: 50M
+          memory: 100M
       restart_policy:
-        condition: on-failure
+        condition: none
     ports:
       - "3306:3306"
     networks:
       - users-network
     environment:
-      - MYSQL_ROOT_PASSWORD:temporal1
+      - MYSQL_ROOT_PASSWORD=temporal1
+    volumes:
+      - mysql-data:/var/lib/mysql
   kubernetes-summit-app:
     image: arknot/summit-kubernetes:0.0.20
     deploy:
-      replicas: 6
+      replicas: 10
       resources:
         limits:
           cpus: "0.1"
@@ -86,13 +88,20 @@ services:
       restart_policy:
         condition: on-failure
     ports:
-      - "5000:3000"
+      - "3000:3000"
     networks:
       - users-network
     environment:
-      - MYSQL_USER:user_test
-      - MYSQL_PASSWORD:user_pass
-      - MYSQL_DATABASE:summit
+      - MYSQL_USER=user_test
+      - MYSQL_PASSWORD=user_pass
+      - MYSQL_DATABASE=summit
+      - MYSQL_TEST_PORT_3306_TCP_ADDR=mysql-kuber
+      - MYSQL_TEST_PORT_3306_TCP_PORT=3306
+
+volumes:
+  mysql-data:
+    external:
+      name: mysql-data
 networks:
   users-network:
 
