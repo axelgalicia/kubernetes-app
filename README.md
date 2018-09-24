@@ -6,7 +6,7 @@ A simple App which will be containerized using Docker and then deploy into Kuber
 
     - Docker installed
     - Having a MySQL database started in another container
-    
+
 # MySQL container
 
 ``` sh
@@ -32,8 +32,7 @@ CREATE TABLE `user` (
   `yearsOfExperience` int(11) NOT NULL DEFAULT '0',
   `onContract` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
-
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE USER 'user_test'@'%';
 ALTER USER 'user_test'@'%'
@@ -110,7 +109,7 @@ networks:
 
 # REST API
 
-**GET** http://localhost:3000/  -- shows container id 
+**GET** http://localhost:3000/  -- shows container id
 
 **GET** http://localhost:3000/user  -- list of users
 
@@ -119,7 +118,7 @@ networks:
 
 **POST** http://localhost:3000/user  -- Creates a new user
  body:
-   ``` json 
+   ``` json
     {
             "username": "romina",
             "name": "Romina Galicia",
@@ -131,7 +130,7 @@ networks:
 
 **PUT** http://localhost:3000/user/:username  -- Updates a user
  body:
-   ``` json 
+   ``` json
     {
             "name": "Romina Galicia",
             "role": "Business Analyst Senior",
