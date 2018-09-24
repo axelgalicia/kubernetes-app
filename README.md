@@ -133,3 +133,12 @@ networks:
 **DELETE** http://localhost:3000/user/:username  -- Deletes a user
 
 @Author:  by Axel Galicia
+
+Identify spaces from tabs yaml in vi
+
+```sh
+
+:syntax on
+:set syntax=whitespace
+
+```
