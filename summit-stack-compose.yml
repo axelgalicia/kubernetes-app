@@ -38,6 +38,7 @@ services:
       - MYSQL_DATABASE=summit
       - MYSQL_TEST_PORT_3306_TCP_ADDR=mysql-kuber
       - MYSQL_TEST_PORT_3306_TCP_PORT=3306
+      - PORT=3000
 
 volumes:
   mysql-data:
