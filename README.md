@@ -53,6 +53,51 @@ FLUSH PRIVILEGES;
 docker run -p 3000:3000 --link mysql-test:mysql-test -e MYSQL_USER=user_test -e MYSQL_PASSWORD=user_pass -e MYSQL_DATABASE=summit arknot/summit-kubernetes:0.0.20
 ```
 
+#Starting via Docker Stack
+
+``` yml
+
+version: "3"
+services:
+  mysql-kuber:
+    image: mysql:5.7
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "3306:3306"
+    networks:
+      - users-network
+    environment:
+      - MYSQL_ROOT_PASSWORD:temporal1
+  kubernetes-summit-app:
+    image: arknot/summit-kubernetes:0.0.20
+    deploy:
+      replicas: 6
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 50M
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "5000:3000"
+    networks:
+      - users-network
+    environment:
+      - MYSQL_USER:user_test
+      - MYSQL_PASSWORD:user_pass
+      - MYSQL_DATABASE:summit
+networks:
+  users-network:
+
+  ```
+
 # REST API
 
 **GET** http://localhost:3000/  -- shows container id 
@@ -61,7 +106,7 @@ docker run -p 3000:3000 --link mysql-test:mysql-test -e MYSQL_USER=user_test -e 
 
 **GET** http://localhost:3000/user/:username  -- shows only username
     [username]: The username for the user
-    
+
 **POST** http://localhost:3000/user  -- Creates a new user
  body:
    ``` json 
