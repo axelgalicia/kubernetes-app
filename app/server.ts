@@ -15,7 +15,7 @@ import { message } from './message';
 import { logger } from './middlewares/logger.middleware';
 
 const app: express.Application = express();
-const port: string = process.env.PORT || '3000';
+const port: string = process.env.PORT || '4000';
 
 //Parsers
 app.use(bodyParser.json());

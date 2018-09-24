@@ -35,7 +35,7 @@ router.get('/:username', function (req, res) {
 });
 // [POST /user] { User }
 router.post('/', function (req, res) {
-    var _a = req.body, username = _a.username, name = _a.name, role = _a.role, yearsOfExperience = _a.yearsOfExperience, onContract = _a.onContract;
+    var _a = req.body, _b = _a.username, username = _b === void 0 ? '' : _b, name = _a.name, role = _a.role, yearsOfExperience = _a.yearsOfExperience, onContract = _a.onContract;
     var user = new user_1.User(username, name, role, yearsOfExperience, onContract);
     var validator = user_validator_1.UserValidator.validate(user);
     if (validator.success) {
@@ -44,7 +44,6 @@ router.post('/', function (req, res) {
                 responseHandler_1.ResponseHandler.errorInvalidRequest(res, {}, [new validatorError_1.ValidatorError('username', username + " username already exist")]);
             }
             else {
-                console.log(user);
                 user_commands_1.UserCommands.create(user).then(function (result) {
                     console.log("Registering user: " + username);
                     responseHandler_1.ResponseHandler.successfulNoContent(res);

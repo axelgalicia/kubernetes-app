@@ -17,7 +17,7 @@ var message_1 = require("./message");
 //Middleware
 var logger_middleware_1 = require("./middlewares/logger.middleware");
 var app = express_1.default();
-var port = process.env.PORT || '3000';
+var port = process.env.PORT || '4000';
 //Parsers
 app.use(body_parser_1.default.json());
 app.use(body_parser_1.default.urlencoded({ extended: true }));
